@@ -3,7 +3,6 @@ library(reshape2)
 library(ggplot2)
 library(plotly)
 library(GGally)
-#source('functions.R')
 
 data <- read.csv('~/Documents/MSAN 622/HW 3/Facebook_metrics/dataset_Facebook.csv', sep=";")
 
@@ -32,24 +31,24 @@ multiple$Post.Month <- factor(multiple$Post.Month, labels = c("January", "Februa
                                                               "October", "November", "December"))
 multiple$interaction_type<- factor(multiple$interaction_type, labels = c("Comment", "Like", "Share"))
 
-parallel <- data[c(2,4,5,6,7,16,17,18,19)]
+parallel <- data[c(2,7,16,17,18,19)]
 parallel <- parallel[complete.cases(parallel),]
-parallel$Post.Month <- factor(parallel$Post.Month, labels = c("January", "February", "March", "April", "May", "June", "July", "August", "September",
-                                                              "October", "November", "December"))
-parallel$Post.Weekday <- factor(parallel$Post.Weekday, labels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
-parallel$Post.Hour <- factor(parallel$Post.Hour, labels = c("12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM",
-                                                              "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", " 6 PM", "7 PM",
-                                                              "9 PM", "10 PM"))
-parallel$Paid <- factor(parallel$Paid, labels = c("No", "Yes"))
+# parallel$Post.Month <- factor(parallel$Post.Month, labels = c("January", "February", "March", "April", "May", "June", "July", "August", "September",
+#                                                               "October", "November", "December"))
+# parallel$Post.Weekday <- factor(parallel$Post.Weekday, labels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+# parallel$Post.Hour <- factor(parallel$Post.Hour, labels = c("12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM",
+#                                                               "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", " 6 PM", "7 PM",
+#                                                               "9 PM", "10 PM"))
+# parallel$Paid <- factor(parallel$Paid, labels = c("No", "Yes"))
 
 ui <- fluidPage(
   titlePanel(title = 'Visualizing Facebook Data'),
   conditionalPanel(
     condition="input.conditionedPanels==2", 
-    helpText("Note that the months which are displayed can vary. This is because not all months have information for each interaction type.")),
+    helpText("Note that the months which are displayed can vary. This is because not all months have information for each post type.")),
   conditionalPanel(
     condition="input.conditionedPanels==2", 
-    selectInput("type", label = "Select post type", 
+    selectInput("type", label = "Select Post Type", 
                 choices = list("Link" = "Link", "Photo" = "Photo", "Status" = "Status", "Video" = "Video"), selected = "Photo")),
   mainPanel(
     tabsetPanel(
@@ -106,10 +105,11 @@ server <- function(input, output) {
     g2
   }, height = 700, width = 900)
   output$parallel <- renderPlotly({
-    g3 <- ggplotly(ggparcoord(parallel, columns = 2:ncol(parallel), groupColumn = 1, scale = "uniminmax") +
+    g3 <- ggplotly(ggparcoord(parallel, columns = 2:ncol(parallel), groupColumn = 1, scale = "uniminmax",
+                              mapping=aes(text=value)) +
         xlab("Variable") +
         ylab("Scaled Value") +
-        scale_x_discrete(labels = c("Month", "Day of Week", "Hour", "Paid", "Comments", "Likes", "Shares", "Total Interactions")) +
+        scale_x_discrete(labels = c("Paid", "Comments", "Likes", "Shares", "Total Interactions")) +
         scale_y_continuous(breaks = seq(0, 1, by = 0.2)) +
         theme(panel.background = element_blank(),
               panel.grid.major = element_line(colour = "grey"),
