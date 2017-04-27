@@ -4,7 +4,7 @@ library(ggplot2)
 library(plotly)
 library(GGally)
 
-data <- read.csv('~/Documents/MSAN 622/HW 3/Facebook_metrics/dataset_Facebook.csv', sep=";")
+data <- read.csv('dataset_Facebook.csv', sep=";")
 
 bubble <- data[c(2,16,17,18)]
 bubble <- bubble[complete.cases(bubble),]
