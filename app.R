@@ -1,3 +1,5 @@
+remove(list = ls())
+
 library(shiny)
 library(reshape2)
 library(ggplot2)
@@ -12,7 +14,7 @@ bubble <- bubble[order(bubble$like, decreasing = T),]
 
 multiple <- data[c(2,4,16,17,18)]
 multiple <- multiple[complete.cases(multiple),]
-multiple <- melt(multiple, id.vars = c('Type','Post.Month'), variable.name = "interaction_type", value.name = "total_for_post")
+multiple <- reshape2::melt(multiple, id.vars = c('Type','Post.Month'), variable.name = "interaction_type", value.name = "total_for_post")
 for (interaction in c('share','comment','like')) {
   for (i in 1:12) {
     for (type in c('Status','Photo','Video','Link')) {
